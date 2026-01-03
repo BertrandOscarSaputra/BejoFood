@@ -224,7 +224,7 @@ function App() {
             </div>
             <div className="stat-card">
               <div className="icon success">💰</div>
-              <div className="value">₱{stats.today?.revenue?.toLocaleString() || 0}</div>
+              <div className="value">Rp{stats.today?.revenue?.toLocaleString() || 0}</div>
               <div className="label">Today's Revenue</div>
             </div>
             <div className="stat-card">
@@ -292,7 +292,7 @@ function App() {
                   </div>
                   <div className="order-details">
                     <span className="order-items">{order.item_count} items</span>
-                    <span className="order-total">₱{parseFloat(order.total).toLocaleString()}</span>
+                    <span className="order-total">Rp{parseFloat(order.total).toLocaleString()}</span>
                   </div>
                 </div>
               ))
@@ -416,8 +416,8 @@ function OrderModal({ order, onClose, onStatusChange, formatDate, formatTime }) 
                       <tr key={idx}>
                         <td className="item-name">{item.name}</td>
                         <td>{item.quantity}</td>
-                        <td>₱{parseFloat(item.price).toLocaleString()}</td>
-                        <td className="subtotal">₱{parseFloat(item.subtotal).toLocaleString()}</td>
+                        <td>Rp{parseFloat(item.price).toLocaleString()}</td>
+                        <td className="subtotal">Rp{parseFloat(item.subtotal).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -425,7 +425,7 @@ function OrderModal({ order, onClose, onStatusChange, formatDate, formatTime }) 
 
                 <div className="order-total-row">
                   <span className="label">Total</span>
-                  <span className="value">₱{parseFloat(detailedOrder.total).toLocaleString()}</span>
+                  <span className="value">Rp{parseFloat(detailedOrder.total).toLocaleString()}</span>
                 </div>
               </div>
 
