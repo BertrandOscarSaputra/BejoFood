@@ -1,5 +1,5 @@
 """
-Management command to create sample menu data.
+Management command to create sample menu data with Indonesian cuisine.
 Usage: python manage.py seed_menu
 """
 from django.core.management.base import BaseCommand
@@ -7,81 +7,96 @@ from menu.models import Category, MenuItem
 
 
 class Command(BaseCommand):
-    help = 'Seed database with sample menu data'
+    help = 'Seed database with Indonesian cuisine menu data'
 
     def handle(self, *args, **options):
-        self.stdout.write('Creating sample menu data...')
+        self.stdout.write('Creating Indonesian cuisine menu...')
+
+        # Categories (use get_or_create to avoid breaking existing orders)
 
         # Categories
         categories_data = [
-            {'name': 'Appetizers', 'emoji': '🥗', 'order': 1},
-            {'name': 'Main Courses', 'emoji': '🍽️', 'order': 2},
-            {'name': 'Burgers', 'emoji': '🍔', 'order': 3},
-            {'name': 'Pizza', 'emoji': '🍕', 'order': 4},
-            {'name': 'Beverages', 'emoji': '🥤', 'order': 5},
-            {'name': 'Desserts', 'emoji': '🍰', 'order': 6},
+            {'name': 'Makanan Pembuka', 'emoji': '🥗', 'order': 1, 'description': 'Appetizers'},
+            {'name': 'Nasi & Mie', 'emoji': '🍚', 'order': 2, 'description': 'Rice & Noodles'},
+            {'name': 'Ayam & Bebek', 'emoji': '🍗', 'order': 3, 'description': 'Chicken & Duck'},
+            {'name': 'Sate & Bakar', 'emoji': '🍢', 'order': 4, 'description': 'Satay & Grilled'},
+            {'name': 'Seafood', 'emoji': '🦐', 'order': 5, 'description': 'Seafood dishes'},
+            {'name': 'Minuman', 'emoji': '🥤', 'order': 6, 'description': 'Beverages'},
+            {'name': 'Dessert', 'emoji': '🍰', 'order': 7, 'description': 'Desserts'},
         ]
 
         categories = {}
         for cat_data in categories_data:
-            cat, created = Category.objects.get_or_create(
-                name=cat_data['name'],
-                defaults={'emoji': cat_data['emoji'], 'order': cat_data['order']}
-            )
+            cat = Category.objects.create(**cat_data)
             categories[cat_data['name']] = cat
-            status = 'Created' if created else 'Exists'
-            self.stdout.write(f"  {status}: {cat}")
+            self.stdout.write(f"  Created: {cat}")
 
-        # Menu items
+        # Menu items with Indonesian cuisine and IDR prices
         items_data = [
-            # Appetizers
-            {'category': 'Appetizers', 'name': 'Spring Rolls', 'price': 120, 'description': 'Crispy vegetable spring rolls with sweet chili sauce'},
-            {'category': 'Appetizers', 'name': 'Chicken Wings', 'price': 180, 'description': 'Buffalo style chicken wings with blue cheese dip'},
-            {'category': 'Appetizers', 'name': 'Nachos Supreme', 'price': 200, 'description': 'Loaded nachos with cheese, jalapeños, and salsa'},
+            # Makanan Pembuka (Appetizers)
+            {'category': 'Makanan Pembuka', 'name': 'Lumpia Goreng', 'price': 15000, 'description': 'Crispy spring rolls with vegetables'},
+            {'category': 'Makanan Pembuka', 'name': 'Tahu Goreng', 'price': 12000, 'description': 'Fried tofu with sweet soy sauce'},
+            {'category': 'Makanan Pembuka', 'name': 'Tempe Mendoan', 'price': 10000, 'description': 'Thin crispy fried tempeh'},
+            {'category': 'Makanan Pembuka', 'name': 'Perkedel Jagung', 'price': 8000, 'description': 'Corn fritters'},
+            {'category': 'Makanan Pembuka', 'name': 'Gado-Gado', 'price': 25000, 'description': 'Vegetable salad with peanut sauce'},
             
-            # Main Courses
-            {'category': 'Main Courses', 'name': 'Grilled Chicken', 'price': 280, 'description': 'Herb-marinated grilled chicken breast with vegetables'},
-            {'category': 'Main Courses', 'name': 'Beef Steak', 'price': 450, 'description': '200g premium beef steak with mushroom sauce'},
-            {'category': 'Main Courses', 'name': 'Fish & Chips', 'price': 320, 'description': 'Beer-battered fish with crispy fries and tartar sauce'},
-            {'category': 'Main Courses', 'name': 'Pasta Carbonara', 'price': 250, 'description': 'Creamy pasta with bacon, egg, and parmesan'},
+            # Nasi & Mie (Rice & Noodles)
+            {'category': 'Nasi & Mie', 'name': 'Nasi Goreng Spesial', 'price': 28000, 'description': 'Special fried rice with egg and chicken'},
+            {'category': 'Nasi & Mie', 'name': 'Nasi Padang', 'price': 35000, 'description': 'Steamed rice with Padang-style dishes'},
+            {'category': 'Nasi & Mie', 'name': 'Nasi Uduk', 'price': 22000, 'description': 'Coconut rice with side dishes'},
+            {'category': 'Nasi & Mie', 'name': 'Mie Goreng', 'price': 25000, 'description': 'Fried noodles with vegetables'},
+            {'category': 'Nasi & Mie', 'name': 'Mie Ayam Bakso', 'price': 20000, 'description': 'Chicken noodles with meatballs'},
+            {'category': 'Nasi & Mie', 'name': 'Kwetiau Goreng', 'price': 27000, 'description': 'Stir-fried flat rice noodles'},
             
-            # Burgers
-            {'category': 'Burgers', 'name': 'Classic Burger', 'price': 180, 'description': 'Beef patty, lettuce, tomato, onion, pickles'},
-            {'category': 'Burgers', 'name': 'Cheese Burger', 'price': 200, 'description': 'Classic burger with melted cheddar cheese'},
-            {'category': 'Burgers', 'name': 'Bacon Deluxe', 'price': 250, 'description': 'Double patty with bacon, cheese, and special sauce'},
-            {'category': 'Burgers', 'name': 'Mushroom Swiss', 'price': 230, 'description': 'Beef patty with sautéed mushrooms and swiss cheese'},
+            # Ayam & Bebek (Chicken & Duck)
+            {'category': 'Ayam & Bebek', 'name': 'Ayam Goreng Kremes', 'price': 32000, 'description': 'Fried chicken with crispy crumbs'},
+            {'category': 'Ayam & Bebek', 'name': 'Ayam Penyet', 'price': 28000, 'description': 'Smashed fried chicken with sambal'},
+            {'category': 'Ayam & Bebek', 'name': 'Ayam Bakar Madu', 'price': 35000, 'description': 'Honey grilled chicken'},
+            {'category': 'Ayam & Bebek', 'name': 'Bebek Goreng', 'price': 40000, 'description': 'Crispy fried duck'},
+            {'category': 'Ayam & Bebek', 'name': 'Opor Ayam', 'price': 30000, 'description': 'Chicken in coconut milk curry'},
+            {'category': 'Ayam & Bebek', 'name': 'Rendang Ayam', 'price': 38000, 'description': 'Chicken rendang curry'},
             
-            # Pizza
-            {'category': 'Pizza', 'name': 'Margherita', 'price': 280, 'description': 'Classic tomato sauce, mozzarella, and fresh basil'},
-            {'category': 'Pizza', 'name': 'Pepperoni', 'price': 320, 'description': 'Loaded with pepperoni and mozzarella cheese'},
-            {'category': 'Pizza', 'name': 'Hawaiian', 'price': 300, 'description': 'Ham, pineapple, and mozzarella'},
-            {'category': 'Pizza', 'name': 'BBQ Chicken', 'price': 350, 'description': 'BBQ sauce, grilled chicken, onions, and cilantro'},
+            # Sate & Bakar (Satay & Grilled)
+            {'category': 'Sate & Bakar', 'name': 'Sate Ayam (10 tusuk)', 'price': 30000, 'description': 'Chicken satay with peanut sauce'},
+            {'category': 'Sate & Bakar', 'name': 'Sate Kambing (10 tusuk)', 'price': 45000, 'description': 'Lamb satay with soy sauce'},
+            {'category': 'Sate & Bakar', 'name': 'Sate Padang', 'price': 35000, 'description': 'Padang-style beef satay'},
+            {'category': 'Sate & Bakar', 'name': 'Ikan Bakar', 'price': 50000, 'description': 'Grilled fish with sambal'},
+            {'category': 'Sate & Bakar', 'name': 'Cumi Bakar', 'price': 45000, 'description': 'Grilled squid with soy sauce'},
             
-            # Beverages
-            {'category': 'Beverages', 'name': 'Iced Tea', 'price': 60, 'description': 'Refreshing house-brewed iced tea'},
-            {'category': 'Beverages', 'name': 'Fresh Lemonade', 'price': 80, 'description': 'Freshly squeezed lemonade'},
-            {'category': 'Beverages', 'name': 'Mango Shake', 'price': 120, 'description': 'Creamy mango milkshake'},
-            {'category': 'Beverages', 'name': 'Coffee', 'price': 100, 'description': 'Hot brewed coffee'},
-            {'category': 'Beverages', 'name': 'Soda', 'price': 50, 'description': 'Coke, Sprite, or Royal'},
+            # Seafood
+            {'category': 'Seafood', 'name': 'Udang Goreng Tepung', 'price': 55000, 'description': 'Crispy fried prawns'},
+            {'category': 'Seafood', 'name': 'Cumi Goreng Tepung', 'price': 45000, 'description': 'Crispy fried calamari'},
+            {'category': 'Seafood', 'name': 'Kepiting Saus Padang', 'price': 85000, 'description': 'Crab in spicy Padang sauce'},
+            {'category': 'Seafood', 'name': 'Ikan Asam Manis', 'price': 48000, 'description': 'Sweet and sour fish'},
+            {'category': 'Seafood', 'name': 'Udang Saus Tiram', 'price': 58000, 'description': 'Prawns in oyster sauce'},
             
-            # Desserts
-            {'category': 'Desserts', 'name': 'Chocolate Cake', 'price': 150, 'description': 'Rich chocolate layer cake'},
-            {'category': 'Desserts', 'name': 'Cheesecake', 'price': 180, 'description': 'New York style cheesecake'},
-            {'category': 'Desserts', 'name': 'Ice Cream', 'price': 80, 'description': 'Two scoops of your choice'},
-            {'category': 'Desserts', 'name': 'Halo-Halo', 'price': 120, 'description': 'Filipino shaved ice dessert'},
+            # Minuman (Beverages)
+            {'category': 'Minuman', 'name': 'Es Teh Manis', 'price': 8000, 'description': 'Sweet iced tea'},
+            {'category': 'Minuman', 'name': 'Es Jeruk', 'price': 10000, 'description': 'Fresh orange juice'},
+            {'category': 'Minuman', 'name': 'Es Kelapa Muda', 'price': 15000, 'description': 'Young coconut ice'},
+            {'category': 'Minuman', 'name': 'Es Cendol', 'price': 12000, 'description': 'Green rice flour jelly with coconut milk'},
+            {'category': 'Minuman', 'name': 'Jus Alpukat', 'price': 18000, 'description': 'Avocado juice'},
+            {'category': 'Minuman', 'name': 'Es Campur', 'price': 15000, 'description': 'Mixed ice dessert drink'},
+            {'category': 'Minuman', 'name': 'Kopi Susu', 'price': 12000, 'description': 'Coffee with milk'},
+            
+            # Dessert
+            {'category': 'Dessert', 'name': 'Pisang Goreng', 'price': 10000, 'description': 'Fried banana fritters'},
+            {'category': 'Dessert', 'name': 'Klepon', 'price': 8000, 'description': 'Sweet rice balls with palm sugar'},
+            {'category': 'Dessert', 'name': 'Dadar Gulung', 'price': 10000, 'description': 'Pandan crepes with coconut'},
+            {'category': 'Dessert', 'name': 'Es Krim Kelapa', 'price': 15000, 'description': 'Coconut ice cream'},
+            {'category': 'Dessert', 'name': 'Martabak Manis', 'price': 25000, 'description': 'Sweet thick pancake'},
         ]
 
         for item_data in items_data:
             cat = categories[item_data['category']]
-            item, created = MenuItem.objects.get_or_create(
+            MenuItem.objects.create(
                 category=cat,
                 name=item_data['name'],
-                defaults={
-                    'price': item_data['price'],
-                    'description': item_data['description']
-                }
+                price=item_data['price'],
+                description=item_data['description']
             )
-            if created:
-                self.stdout.write(f"  Created: {item}")
+            self.stdout.write(f"  Created: {item_data['name']}")
 
-        self.stdout.write(self.style.SUCCESS(f'\nMenu seeded! {MenuItem.objects.count()} items in {Category.objects.count()} categories.'))
+        self.stdout.write(self.style.SUCCESS(
+            f'\nMenu seeded! {MenuItem.objects.count()} items in {Category.objects.count()} categories.'
+        ))

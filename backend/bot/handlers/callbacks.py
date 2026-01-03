@@ -110,7 +110,7 @@ async def handle_add_to_cart(chat_id: str, user_data: Dict, item_id: str) -> Non
     await telegram_service.send_message(
         chat_id,
         f"✅ Added <b>{menu_item.name}</b> to cart!\n\n"
-        f"🛒 Cart: {item_count} items - ₱{total:.2f}\n\n"
+        f"🛒 Cart: {item_count} items - Rp{total:,.0f}\n\n"
         f"Use /cart to view or /menu to continue shopping."
     )
 

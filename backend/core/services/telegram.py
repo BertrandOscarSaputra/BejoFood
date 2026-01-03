@@ -92,13 +92,13 @@ class TelegramService(MessagingService):
         keyboard = []
         
         for item in items:
-            text += f"• <b>{item['name']}</b> - ₱{item['price']}\n"
+            text += f"• <b>{item['name']}</b> - Rp{item['price']}\n"
             if item.get('description'):
                 text += f"  <i>{item['description']}</i>\n"
             text += "\n"
             
             keyboard.append([{
-                "text": f"➕ {item['name']} - ₱{item['price']}",
+                "text": f"➕ {item['name']} - Rp{item['price']}",
                 "callback_data": f"add:{item['id']}"
             }])
 
@@ -128,7 +128,7 @@ class TelegramService(MessagingService):
 
         for item in cart_items:
             subtotal = item['price'] * item['quantity']
-            text += f"• {item['quantity']}x <b>{item['name']}</b> - ₱{subtotal:.2f}\n"
+            text += f"• {item['quantity']}x <b>{item['name']}</b> - Rp{subtotal:.2f}\n"
             
             # Add/remove buttons for each item
             keyboard.append([
@@ -138,7 +138,7 @@ class TelegramService(MessagingService):
                 {"text": "🗑️", "callback_data": f"cart:remove:{item['id']}"}
             ])
 
-        text += f"\n<b>Total: ₱{total:.2f}</b>"
+        text += f"\n<b>Total: Rp{total:.2f}</b>"
 
         keyboard.append([{"text": "🗑️ Clear Cart", "callback_data": "cart:clear"}])
         keyboard.append([{"text": "📋 Continue Shopping", "callback_data": "menu:back"}])
@@ -164,10 +164,10 @@ class TelegramService(MessagingService):
 <b>Items:</b>
 """
         for item in order['items']:
-            text += f"• {item['quantity']}x {item['name']} - ₱{item['subtotal']:.2f}\n"
+            text += f"• {item['quantity']}x {item['name']} - Rp{item['subtotal']:.2f}\n"
 
         text += f"""
-<b>Total:</b> ₱{order['total']:.2f}
+<b>Total:</b> Rp{order['total']:.2f}
 
 📍 <b>Delivery Address:</b>
 {order['delivery_address']}
