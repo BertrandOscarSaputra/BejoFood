@@ -152,6 +152,28 @@ REST_FRAMEWORK = {
 }
 
 
+# Security Settings
+# https://docs.djangoproject.com/en/5.2/topics/security/
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if not DEBUG:
+    # Strict-Transport-Security
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # SSL Redirect
+    SECURE_SSL_REDIRECT = True
+    
+    # Cookies
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # Browser Security
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
 # CORS settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
@@ -180,3 +202,4 @@ CHANNEL_LAYERS = {
 
 # Telegram Bot
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
+TELEGRAM_SECRET_TOKEN = config('TELEGRAM_SECRET_TOKEN', default='')

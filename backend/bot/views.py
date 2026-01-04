@@ -25,6 +25,13 @@ def telegram_webhook(request):
     Routes to appropriate handler based on update type.
     """
     try:
+        # Verify secret token
+        from django.conf import settings
+        secret_token = request.headers.get('X-Telegram-Bot-Api-Secret-Token')
+        if settings.TELEGRAM_SECRET_TOKEN and secret_token != settings.TELEGRAM_SECRET_TOKEN:
+            logger.warning("Invalid secret token in webhook request")
+            return JsonResponse({'ok': False, 'error': 'Unauthorized'}, status=403)
+
         # Parse incoming update
         update = json.loads(request.body)
         logger.info(f"Received update: {update}")

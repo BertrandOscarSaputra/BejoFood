@@ -31,13 +31,18 @@ class Command(BaseCommand):
     def set_webhook(self, base_url, webhook_url):
         self.stdout.write(f"Setting webhook to: {webhook_url}")
         
-        response = httpx.post(
-            f"{base_url}/setWebhook",
-            json={
-                "url": webhook_url,
-                "allowed_updates": ["message", "callback_query"]
-            }
-        )
+        # Prepare payload
+        payload = {
+            "url": webhook_url,
+            "allowed_updates": ["message", "callback_query"]
+        }
+        
+        # Add secret token if configured
+        if settings.TELEGRAM_SECRET_TOKEN:
+            payload['secret_token'] = settings.TELEGRAM_SECRET_TOKEN
+            self.stdout.write("  Using secret token")
+
+        response = httpx.post(f"{base_url}/setWebhook", json=payload)
         
         result = response.json()
         if result.get('ok'):

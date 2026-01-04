@@ -6,10 +6,18 @@ description: How to start the BejoFood development servers
 
 Run these commands in separate terminals from the project root (`c:\Users\Lenovo\Desktop\BejoFood`):
 
+## 0. Prerequisites
+Ensure your `.env` file has the following (especially for security):
+```env
+DEBUG=True
+TELEGRAM_SECRET_TOKEN=your-generated-secret-token
+```
+
 ## 1. Start Django Backend (Terminal 1)
+Using `runserver` for development (supports static files & debug):
 ```powershell
 cd backend
-..\venv\Scripts\python.exe -m daphne -b 0.0.0.0 -p 8000 backend.asgi:application
+..\venv\Scripts\python.exe manage.py runserver 0.0.0.0:8000
 ```
 
 ## 2. Start Frontend Dashboard (Terminal 2)
@@ -23,7 +31,7 @@ npm run dev
 & "C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Packages\Ngrok.Ngrok_Microsoft.Winget.Source_8wekyb3d8bbwe\ngrok.exe" http 8000
 ```
 
-## 4. Set Telegram Webhook (one-time after ngrok starts)
+## 4. Set Telegram Webhook (on ngrok URL change)
 Get the ngrok URL from http://127.0.0.1:4040 then run:
 ```powershell
 cd backend
@@ -32,12 +40,10 @@ cd backend
 
 ## Access Points
 - **Dashboard**: http://localhost:5173
-- **Django Admin**: http://localhost:8000/admin/
+- **Django Admin**: http://localhost:8000/admin/ (Login: admin/admin123)
 - **Ngrok Inspector**: http://127.0.0.1:4040
-- **Telegram Bot**: Open Telegram and message your bot
 
 ## Quick Test
 1. Send `/start` to your Telegram bot
-2. Send `/menu` to see the food menu
-3. Add items and checkout
-4. Watch orders appear in the dashboard!
+2. Send `/menu` to see the **Indonesian menu**
+3. Create an order and watch it appear on the dashboard!
