@@ -4,6 +4,11 @@ import './index.css'
 const API_BASE = 'http://localhost:8000/api/v1'
 const WS_URL = 'ws://localhost:8000/ws/orders/'
 
+// Format Indonesian Rupiah (Rp 250.000)
+const formatRupiah = (amount) => {
+  return `Rp ${Math.round(amount).toLocaleString('id-ID')}`
+}
+
 // Status configurations
 const STATUS_CONFIG = {
   pending: { label: 'Pending', icon: '⏳' },
@@ -182,13 +187,13 @@ function App() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin/menu/menuitem/" target="_blank">
+              <a className="nav-link" href="http://localhost:8000/admin/menu/menuitem/" target="_blank" rel="noopener noreferrer">
                 <span>🍽️</span>
                 <span>Menu</span>
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin/" target="_blank">
+              <a className="nav-link" href="http://localhost:8000/admin/" target="_blank" rel="noopener noreferrer">
                 <span>⚙️</span>
                 <span>Settings</span>
               </a>
@@ -224,7 +229,7 @@ function App() {
             </div>
             <div className="stat-card">
               <div className="icon success">💰</div>
-              <div className="value">Rp{stats.today?.revenue?.toLocaleString() || 0}</div>
+              <div className="value">{formatRupiah(stats.today?.revenue || 0)}</div>
               <div className="label">Today's Revenue</div>
             </div>
             <div className="stat-card">
@@ -292,7 +297,7 @@ function App() {
                   </div>
                   <div className="order-details">
                     <span className="order-items">{order.item_count} items</span>
-                    <span className="order-total">Rp{parseFloat(order.total).toLocaleString()}</span>
+                    <span className="order-total">{formatRupiah(parseFloat(order.total))}</span>
                   </div>
                 </div>
               ))
@@ -416,8 +421,8 @@ function OrderModal({ order, onClose, onStatusChange, formatDate, formatTime }) 
                       <tr key={idx}>
                         <td className="item-name">{item.name}</td>
                         <td>{item.quantity}</td>
-                        <td>Rp{parseFloat(item.price).toLocaleString()}</td>
-                        <td className="subtotal">Rp{parseFloat(item.subtotal).toLocaleString()}</td>
+                        <td>{formatRupiah(parseFloat(item.price))}</td>
+                        <td className="subtotal">{formatRupiah(parseFloat(item.subtotal))}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -425,7 +430,7 @@ function OrderModal({ order, onClose, onStatusChange, formatDate, formatTime }) 
 
                 <div className="order-total-row">
                   <span className="label">Total</span>
-                  <span className="value">Rp{parseFloat(detailedOrder.total).toLocaleString()}</span>
+                  <span className="value">{formatRupiah(parseFloat(detailedOrder.total))}</span>
                 </div>
               </div>
 

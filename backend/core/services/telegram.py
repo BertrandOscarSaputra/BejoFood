@@ -8,6 +8,11 @@ from django.conf import settings
 from .messaging import MessagingService
 
 
+def format_rupiah(amount):
+    """Format number as Indonesian Rupiah (Rp 250.000)."""
+    return f"Rp {int(amount):,}".replace(',', '.')
+
+
 class TelegramService(MessagingService):
     """
     Telegram Bot API implementation of MessagingService.
@@ -92,13 +97,13 @@ class TelegramService(MessagingService):
         keyboard = []
         
         for item in items:
-            text += f"• <b>{item['name']}</b> - Rp{item['price']}\n"
+            text += f"• <b>{item['name']}</b> - {format_rupiah(item['price'])}\n"
             if item.get('description'):
                 text += f"  <i>{item['description']}</i>\n"
             text += "\n"
             
             keyboard.append([{
-                "text": f"➕ {item['name']} - Rp{item['price']}",
+                "text": f"➕ {item['name']} - {format_rupiah(item['price'])}",
                 "callback_data": f"add:{item['id']}"
             }])
 
@@ -128,7 +133,7 @@ class TelegramService(MessagingService):
 
         for item in cart_items:
             subtotal = item['price'] * item['quantity']
-            text += f"• {item['quantity']}x <b>{item['name']}</b> - Rp{subtotal:.2f}\n"
+            text += f"• {item['quantity']}x <b>{item['name']}</b> - {format_rupiah(subtotal)}\n"
             
             # Add/remove buttons for each item
             keyboard.append([
@@ -138,7 +143,7 @@ class TelegramService(MessagingService):
                 {"text": "🗑️", "callback_data": f"cart:remove:{item['id']}"}
             ])
 
-        text += f"\n<b>Total: Rp{total:.2f}</b>"
+        text += f"\n<b>Total: {format_rupiah(total)}</b>"
 
         keyboard.append([{"text": "🗑️ Clear Cart", "callback_data": "cart:clear"}])
         keyboard.append([{"text": "📋 Continue Shopping", "callback_data": "menu:back"}])
@@ -164,10 +169,10 @@ class TelegramService(MessagingService):
 <b>Items:</b>
 """
         for item in order['items']:
-            text += f"• {item['quantity']}x {item['name']} - Rp{item['subtotal']:.2f}\n"
+            text += f"• {item['quantity']}x {item['name']} - {format_rupiah(item['subtotal'])}\n"
 
         text += f"""
-<b>Total:</b> Rp{order['total']:.2f}
+<b>Total:</b> {format_rupiah(order['total'])}
 
 📍 <b>Delivery Address:</b>
 {order['delivery_address']}
