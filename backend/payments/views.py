@@ -71,16 +71,13 @@ async def notify_payment_success(transaction_id):
         def format_rupiah(amount):
             return f"Rp {int(amount):,}".replace(',', '.')
         
-        message = f"""
-✅ <b>Payment Received!</b>
-
-📝 <b>Order #{order.order_number}</b>
-💰 Amount: {format_rupiah(payment.gross_amount)}
-
-Your order has been <b>confirmed</b> and is being prepared! 🍳
-
-Use /status to track your order.
-"""
+        message = (
+            f"✅ <b>Pembayaran Diterima!</b>\n\n"
+            f"📝 <b>Order #{order.order_number}</b>\n"
+            f"💰 Total: {format_rupiah(payment.gross_amount)}\n\n"
+            f"Pesanan Anda sudah <b>dikonfirmasi</b> dan sedang diproses! 🍳\n\n"
+            f"Gunakan /status untuk melacak pesanan Anda."
+        )
         await telegram_service.send_message(chat_id, message)
         
     except Exception as e:
@@ -101,13 +98,11 @@ async def notify_payment_expired(transaction_id):
         user = order.user
         chat_id = str(user.telegram_id)
         
-        message = f"""
-⏰ <b>Payment Expired</b>
-
-Your payment for <b>Order #{order.order_number}</b> has expired.
-
-Would you like to place a new order? Use /menu to start again.
-"""
+        message = (
+            f"⏰ <b>Pembayaran Kadaluarsa</b>\n\n"
+            f"Pembayaran untuk <b>Order #{order.order_number}</b> telah kadaluarsa.\n\n"
+            f"Silakan gunakan /menu untuk membuat pesanan baru."
+        )
         await telegram_service.send_message(chat_id, message)
         
     except Exception as e:
