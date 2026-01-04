@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'bot',
     'dashboard',
     'realtime',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -203,3 +204,8 @@ CHANNEL_LAYERS = {
 # Telegram Bot
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 TELEGRAM_SECRET_TOKEN = config('TELEGRAM_SECRET_TOKEN', default='')
+
+# Midtrans Payment Gateway
+MIDTRANS_SERVER_KEY = config('MIDTRANS_SERVER_KEY', default='')
+MIDTRANS_CLIENT_KEY = config('MIDTRANS_CLIENT_KEY', default='')
+MIDTRANS_IS_PRODUCTION = config('MIDTRANS_IS_PRODUCTION', default=False, cast=bool)

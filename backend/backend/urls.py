@@ -7,5 +7,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webhook/', include('bot.urls')),
+    path('webhook/payment/', include('payments.urls')),
     path('api/v1/', include('dashboard.urls')),
 ]

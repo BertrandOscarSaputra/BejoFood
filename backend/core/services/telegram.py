@@ -55,6 +55,22 @@ class TelegramService(MessagingService):
         result = await self._make_request("sendMessage", data)
         return result.get("ok", False)
 
+    async def send_photo(
+        self,
+        user_id: str,
+        photo_url: str,
+        caption: str = ""
+    ) -> bool:
+        """Send a photo to a user."""
+        data = {
+            "chat_id": user_id,
+            "photo": photo_url,
+            "caption": caption,
+            "parse_mode": "HTML"
+        }
+        result = await self._make_request("sendPhoto", data)
+        return result.get("ok", False)
+
     async def send_menu(
         self,
         user_id: str,

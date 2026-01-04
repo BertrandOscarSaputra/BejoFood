@@ -102,7 +102,9 @@ async def handle_checkout_notes(user: TelegramUser, chat_id: str, notes: str) ->
 
 
 async def finalize_order(user: TelegramUser, chat_id: str) -> None:
-    """Create the order from cart."""
+    """Create the order and generate QRIS payment."""
+    from orders.models import OrderStatus
+    
     # Get cart
     cart = await sync_to_async(lambda: user.cart)()
     cart_items = await sync_to_async(list)(
@@ -125,14 +127,15 @@ async def finalize_order(user: TelegramUser, chat_id: str) -> None:
         for item in cart_items
     )
     
-    # Create order
+    # Create order with awaiting_payment status
     order_data = user.conversation_data
     order = await sync_to_async(Order.objects.create)(
         user=user,
         delivery_address=order_data.get('address', ''),
         phone=order_data.get('phone', ''),
         notes=order_data.get('notes', ''),
-        total=total
+        total=total,
+        status=OrderStatus.PENDING
     )
     
     # Create order items
@@ -157,30 +160,64 @@ async def finalize_order(user: TelegramUser, chat_id: str) -> None:
     user.conversation_data = {}
     await sync_to_async(user.save)()
     
-    # Send confirmation
-    items_summary = [
-        {
-            'name': item.menu_item.name,
-            'quantity': item.quantity,
-            'subtotal': float(item.menu_item.price * item.quantity)
-        }
-        for item in cart_items
-    ]
+    # Generate QRIS payment
+    from payments.services import midtrans_service
     
-    await telegram_service.send_order_confirmation(
-        chat_id,
-        {
-            'order_number': order.order_number,
-            'items': items_summary,
-            'total': float(total),
-            'delivery_address': order.delivery_address,
-            'phone': order.phone
-        }
-    )
+    # Need to refetch order with items for QRIS generation
+    order_with_items = await sync_to_async(
+        lambda: Order.objects.prefetch_related('items').get(id=order.id)
+    )()
     
-    # Notify dashboard via WebSocket
+    payment_result = await sync_to_async(midtrans_service.create_qris_payment)(order_with_items)
+    
+    if payment_result['success']:
+        # Format rupiah
+        def format_rupiah(amount):
+            return f"Rp {int(amount):,}".replace(',', '.')
+        
+        # Build items summary
+        items_text = ""
+        for item in cart_items:
+            subtotal = item.menu_item.price * item.quantity
+            items_text += f"• {item.quantity}x {item.menu_item.name} - {format_rupiah(subtotal)}\n"
+        
+        # Send QR code message with payment instructions
+        message = f"""
+🧾 <b>Order #{order.order_number}</b>
+
+{items_text}
+<b>Total: {format_rupiah(total)}</b>
+
+📱 <b>Scan the QR code below to pay</b>
+Use GoPay, OVO, DANA, ShopeePay, or any QRIS-compatible app.
+
+⏰ Payment expires in <b>15 minutes</b>
+
+📍 Delivery to: {order.delivery_address}
+"""
+        await telegram_service.send_message(chat_id, message)
+        
+        # Send QR code image
+        qr_url = payment_result.get('qr_url')
+        if qr_url:
+            await telegram_service.send_photo(chat_id, qr_url, "Scan to pay with QRIS")
+        else:
+            # If no image URL, send the QR string
+            qr_string = payment_result.get('qr_string', '')
+            await telegram_service.send_message(
+                chat_id, 
+                f"<code>{qr_string}</code>\n\n(Copy this QR string if image doesn't load)"
+            )
+    else:
+        # Payment creation failed, notify user
+        await telegram_service.send_message(
+            chat_id,
+            f"❌ Sorry, there was an error creating your payment: {payment_result.get('error')}\n\n"
+            "Your order has been saved. Please try again or contact support."
+        )
+    
+    # Notify dashboard via WebSocket (order created, awaiting payment)
     from channels.layers import get_channel_layer
-    from asgiref.sync import async_to_sync
     
     channel_layer = get_channel_layer()
     if channel_layer:
@@ -197,3 +234,4 @@ async def finalize_order(user: TelegramUser, chat_id: str) -> None:
                 }
             }
         )
+
