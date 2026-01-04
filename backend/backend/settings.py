@@ -162,14 +162,20 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # Channels (WebSocket)
+# Using InMemoryChannelLayer for development ease (no Redis required)
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [config('REDIS_URL', default='redis://localhost:6379/0')],
-        },
-    },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             'hosts': [config('REDIS_URL', default='redis://localhost:6379/0')],
+#         },
+#     },
+# }
 
 
 # Telegram Bot
