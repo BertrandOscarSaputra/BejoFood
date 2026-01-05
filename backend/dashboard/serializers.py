@@ -46,16 +46,22 @@ class OrderListSerializer(serializers.ModelSerializer):
     user = TelegramUserSerializer(read_only=True)
     item_count = serializers.SerializerMethodField()
     status_display = serializers.CharField(read_only=True)
+    payment_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = [
             'id', 'order_number', 'user', 'status', 'status_display',
-            'total', 'item_count', 'created_at'
+            'total', 'item_count', 'payment_status', 'created_at'
         ]
 
     def get_item_count(self, obj):
         return obj.items.count()
+
+    def get_payment_status(self, obj):
+        # Get the latest payment for this order
+        payment = obj.payments.order_by('-created_at').first()
+        return payment.status if payment else None
 
 
 class OrderStatusUpdateSerializer(serializers.Serializer):

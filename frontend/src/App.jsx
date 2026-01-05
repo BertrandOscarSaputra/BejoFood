@@ -242,6 +242,7 @@ function App() {
                     <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
                     <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
                     <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
                     <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
                     <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                     <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
@@ -250,13 +251,13 @@ function App() {
                 <tbody className="divide-y divide-gray-100">
                   {loading ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
                         Loading orders...
                       </td>
                     </tr>
                   ) : orders.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
                         No orders found
                       </td>
                     </tr>
@@ -279,6 +280,19 @@ function App() {
                             {STATUS_CONFIG[order.status]?.label}
                           </span>
                         </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-md border ${
+                            order.payment_status === 'settlement' ? 'bg-green-50 text-green-700 border-green-200' :
+                            order.payment_status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                            order.payment_status === 'expire' ? 'bg-red-50 text-red-700 border-red-200' :
+                            'bg-gray-50 text-gray-600 border-gray-200'
+                          }`}>
+                            {order.payment_status === 'settlement' ? 'Paid' :
+                             order.payment_status === 'pending' ? 'Pending' :
+                             order.payment_status === 'expire' ? 'Expired' :
+                             order.payment_status || 'N/A'}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 text-gray-600">
                           {order.item_count} items
                         </td>
@@ -292,7 +306,7 @@ function App() {
                                 e.stopPropagation()
                                 updateOrderStatus(order.id, STATUS_CONFIG[order.status].next)
                               }}
-                              className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                              className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-700 active:bg-gray-800 rounded-md transition-all duration-150 cursor-pointer shadow-sm hover:shadow active:scale-95"
                             >
                               {STATUS_CONFIG[order.status].next === 'confirmed' ? 'Confirm' :
                                STATUS_CONFIG[order.status].next === 'preparing' ? 'Prepare' :
