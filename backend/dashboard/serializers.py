@@ -59,9 +59,11 @@ class OrderListSerializer(serializers.ModelSerializer):
         return obj.items.count()
 
     def get_payment_status(self, obj):
-        # Get the latest payment for this order
-        payment = obj.payments.order_by('-created_at').first()
-        return payment.status if payment else None
+        # Get the payment for this order (OneToOne relationship)
+        try:
+            return obj.payment.status if hasattr(obj, 'payment') else None
+        except:
+            return None
 
 
 class OrderStatusUpdateSerializer(serializers.Serializer):
