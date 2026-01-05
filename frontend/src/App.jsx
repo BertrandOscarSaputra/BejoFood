@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import './index.css'
 
 // Use environment variable for API base or fallback to localhost
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
-const ADMIN_BASE = import.meta.env.VITE_ADMIN_URL || 'http://localhost:8000'
-const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_URL
+const ADMIN_BASE = import.meta.env.VITE_ADMIN_URL 
+const WS_BASE = import.meta.env.VITE_WS_URL 
 const WS_URL = `${WS_BASE}/ws/orders/`
 
 // Format Indonesian Rupiah
