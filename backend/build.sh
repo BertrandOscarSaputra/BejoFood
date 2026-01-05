@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# Build script for Render deployment
+# Build script for Koyeb deployment
+# Note: pip install is handled by Koyeb buildpack, collectstatic too
 
 set -o errexit
 
-pip install -r requirements.txt
-
-# Collect static files
-python manage.py collectstatic --no-input
-
 # Run database migrations
-python manage.py migrate
+python manage.py migrate --noinput
