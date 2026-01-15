@@ -212,7 +212,3 @@ Update webhook URLs after deployment:
 ## License
 
 MIT License
-
----
-
-Built with ❤️ by Bejo
