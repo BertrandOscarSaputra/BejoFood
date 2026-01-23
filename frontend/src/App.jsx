@@ -172,6 +172,28 @@ function App() {
       {/* Main Content */}
       <main className="ml-64 min-h-screen">
         <div className="p-8">
+          {/* Telegram Bot Link */}
+          <a
+            href="https://t.me/BejoFoodBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-8 block p-4 bg-[#229ED9]/5 border border-[#229ED9]/20 rounded-xl hover:bg-[#229ED9]/10 transition-all flex items-center gap-4 group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-full bg-[#229ED9] text-white flex items-center justify-center shrink-0 shadow-lg shadow-[#229ED9]/20">
+              <svg className="w-6 h-6 ml-[-2px] mt-[2px]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.863.177-.176 3.293-3.018 3.355-3.268.007-.03.016-.241-.09-.344-.106-.102-.27-.068-.387-.042-.164.037-2.793 1.773-7.884 5.21-.4.276-.763.412-1.087.406-.598-.012-1.75-.337-2.607-.614-1.05-.337-1.879-.52-1.803-1.096.04-.3.42-.607 1.155-.923 4.542-1.975 7.574-3.277 9.097-3.91 4.318-1.8 5.212-2.112 5.795-2.114z"/>
+              </svg>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900 group-hover:text-[#229ED9] transition-colors">Start Ordering w/ Telegram Bot</div>
+              <div className="text-sm text-gray-500">Click here to open the telegram bot</div>
+            </div>
+            <div className="ml-auto text-[#229ED9] opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </div>
+          </a>
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
