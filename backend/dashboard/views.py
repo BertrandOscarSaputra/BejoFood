@@ -152,8 +152,19 @@ class DashboardStatsView(APIView):
         today = timezone.now().date()
         week_ago = today - timedelta(days=7)
 
+        # Valid statuses for revenue
+        valid_statuses = [
+            OrderStatus.CONFIRMED,
+            OrderStatus.PREPARING,
+            OrderStatus.READY,
+            OrderStatus.COMPLETED
+        ]
+
         # Today's stats
-        today_orders = Order.objects.filter(created_at__date=today)
+        today_orders = Order.objects.filter(
+            created_at__date=today,
+            status__in=valid_statuses
+        )
         today_revenue = today_orders.aggregate(total=Sum('total'))['total'] or 0
         
         # Pending orders count
@@ -162,7 +173,10 @@ class DashboardStatsView(APIView):
         ).count()
 
         # Weekly stats
-        weekly_orders = Order.objects.filter(created_at__date__gte=week_ago)
+        weekly_orders = Order.objects.filter(
+            created_at__date__gte=week_ago,
+            status__in=valid_statuses
+        )
         weekly_revenue = weekly_orders.aggregate(total=Sum('total'))['total'] or 0
 
         # Order status breakdown
